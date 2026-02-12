@@ -37,15 +37,16 @@ def index():
       return f"ERROR: {e}"
 
   else:
-    tasks = MyTask.query.order_by(MyTask.created).all()
-    return render_template('index.html', my_list=tasks)
+    active_tasks = MyTask.query.filter_by(complete=0).order_by(MyTask.created).all()
+    completed_tasks = MyTask.query.filter_by(complete=1).order_by(MyTask.created).all()
+    return render_template('index.html', active_tasks=active_tasks, completed_tasks=completed_tasks)
 
 #Deleting a task
 @app.route("/delete/<int:id>")
 def delete(id:int):
   delete_task = MyTask.query.get_or_404(id)
   try:
-    db.session.delete(delete_task)
+    delete_task.complete = 1
     db.session.commit()
     return redirect('/')
   except Exception as e:
@@ -64,6 +65,16 @@ def edit(id:int):
       return f"ERROR: {e}"
   else:
     return render_template('edit.html', task=edit_task)
+  
+@app.route("/completed_delete")
+def completed_delete():
+  try:
+    MyTask.query.filter_by(complete=1).delete()
+    db.session.commit()
+  except Exception as e:
+    return f"ERROR: {e}"
+  return redirect('/')
+
 
 if __name__ == "__main__":
   with app.app_context():

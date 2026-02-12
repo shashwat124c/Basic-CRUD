@@ -72,3 +72,15 @@ a {
 a:hover {
     color: #0056b3;
 }
+
+.completed-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.completed-header h3 {
+    text-decoration: underline;
+    margin: 0;
+}
